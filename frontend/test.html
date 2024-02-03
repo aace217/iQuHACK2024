@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+
+        #board {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .character {
+            width: 120px;
+            height: 150px;
+            margin: 10px;
+            border: 2px solid #333;
+            border-radius: 8px;
+            cursor: pointer;
+            background-color: #fff;
+            transition: background-color 0.3s;
+        }
+
+        .question {
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+    </style>
+    <title>Guess Who Game</title>
+</head>
+<body>
+
+    <h2>Guess Who Game</h2>
+
+    <div id="board"></div>
+
+    <div class="question">
+        <p id="questionText">Is your character male?</p>
+        <button onclick="askQuestion('gender', 'male')">Yes</button>
+        <button onclick="askQuestion('gender', 'female')">No</button>
+    </div>
+
+    <script>
+        const characters = [
+            { name: 'Character 1', gender: 'male', hair: 'brown', glasses: false },
+            { name: 'Character 2', gender: 'female', hair: 'blonde', glasses: true },
+            { name: 'Character 3', gender: 'male', hair: 'black', glasses: false },
+            // Add more characters with additional attributes
+        ];
+
+        let selectedCharacter;
+
+        function createBoard() {
+            const board = document.getElementById('board');
+
+            characters.forEach((character, index) => {
+                const card = document.createElement('div');
+                card.className = 'character';
+                card.textContent = character.name;
+                card.setAttribute('data-index', index);
+                card.addEventListener('click', () => selectCharacter(index));
+                board.appendChild(card);
+            });
+        }
+
+        function selectCharacter(index) {
+            selectedCharacter = characters[index];
+            alert(`You selected: ${selectedCharacter.name}`);
+            document.getElementById('questionText').textContent = 'Is your character ' + (selectedCharacter.gender === 'male' ? 'male?' : 'female?');
+        }
+
+        function askQuestion(attribute, value) {
+            characters = characters.filter(character => character[attribute] === value);
+
+            if (characters.length === 1) {
+                alert(`Your character is ${characters[0].name}!`);
+            } else {
+                alert('Keep asking questions.');
+            }
+        }
+
+        window.onload = createBoard;
+    </script>
+
+</body>
+</html>
