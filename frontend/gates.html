@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Gate Customizer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        select {
+            padding: 10px;
+            font-size: 16px;
+        }
+        #gate-description {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        #submit-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Quantum Gate Customizer</h1>
+    <label for="gate-selector">Select Quantum Gate:</label>
+    <select id="gate-selector" onchange="updateGateDescription()">
+        <option value="hadamard">Hadamard Gate</option>
+        <option value="pauli-x">Pauli-X Gate</option>
+        <option value="cnot">CNOT Gate</option>
+    </select>
+
+    <div id="gate-description">
+        <!-- Description will be displayed here -->
+    </div>
+
+    <button id="submit-btn" onclick="submitForm()">Submit</button>
+
+    <script>
+        function updateGateDescription() {
+            var gateSelector = document.getElementById("gate-selector");
+            var gateDescription = document.getElementById("gate-description");
+
+            var selectedGate = gateSelector.value;
+
+            // Update the description based on the selected gate
+            switch (selectedGate) {
+                case "hadamard":
+                    gateDescription.innerHTML = "The Hadamard gate is a one-qubit gate that creates a superposition of the |0⟩ and |1⟩ states.";
+                    break;
+                case "pauli-x":
+                    gateDescription.innerHTML = "The Pauli-X gate is a bit-flip gate that flips the state of a qubit from |0⟩ to |1⟩ or vice versa.";
+                    break;
+                case "cnot":
+                    gateDescription.innerHTML = "The CNOT gate (Controlled NOT) is a two-qubit gate that flips the target qubit if the control qubit is |1⟩.";
+                    break;
+                default:
+                    gateDescription.innerHTML = "Select a quantum gate to see its description.";
+            }
+        }
+
+        function submitForm() {
+            // You can add your submission logic here
+            alert("Form submitted!");
+        }
+
+        // Initialize the gate description on page load
+        updateGateDescription();
+    </script>
+</body>
+</html>

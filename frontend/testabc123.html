@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guess Who Game</title>
+</head>
+<body>
+
+  <h1>Guess Who Game</h1>
+
+  <form id="guessForm" onsubmit="submitGuess(); return false;">
+
+    <label for="category">Select a category:</label>
+    <select id="category" onchange="updateCharacters()">
+      <option value="hairColor">Hair Color</option>
+      <option value="eyeColor">Eye Color</option>
+      <!-- Add more category options as needed -->
+    </select>
+
+    <label for="characters">Select a character:</label>
+    <select id="characters">
+      <!-- Options will be dynamically populated based on the selected category -->
+    </select>
+
+    <button type="submit">Submit Guess</button>
+
+  </form>
+
+  <p id="result"></p>
+
+  <script>
+    const charactersByCategory = {
+      hairColor: ["Alice", "Bob", "Charlie"],
+      eyeColor: ["David", "Emma", "Frank"]
+      // Add more categories and corresponding characters as needed
+    };
+
+    function updateCharacters() {
+      const categoryDropdown = document.getElementById("category");
+      const charactersDropdown = document.getElementById("characters");
+
+      // Clear previous options
+      charactersDropdown.innerHTML = "";
+
+      // Populate characters based on the selected category
+      charactersByCategory[categoryDropdown.value].forEach(character => {
+        const option = document.createElement("option");
+        option.value = character;
+        option.text = character;
+        charactersDropdown.add(option);
+      });
+    }
+
+    function submitGuess() {
+      const selectedCategory = document.getElementById("category").value;
+      const selectedCharacter = document.getElementById("characters").value;
+      const resultParagraph = document.getElementById("result");
+
+      // Add your logic to check if the guess is correct
+      // For simplicity, let's assume the correct answer is "Alice"
+
+      if (selectedCharacter === "Alice") {
+        resultParagraph.textContent = "Congratulations! You guessed correctly!";
+      } else {
+        resultParagraph.textContent = "Sorry, your guess is incorrect. Try again!";
+      }
+    }
+
+    // Initial population on page load
+    updateCharacters();
+  </script>
+
+</body>
+</html>
