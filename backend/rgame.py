@@ -79,13 +79,13 @@ class BoardState:
         self.qc = create_game_circuit()
         self.player1Matrix = np.full((traitNumber,peopleNumber),"black")
         self.player2Matrix = np.full((traitNumber,peopleNumber),"black")
-        
+        self.player1Guesses = [0] * TRAITS_PER_CHARACTER  # A list of five zeros for player 1
+        self.player2Guesses = [0] * TRAITS_PER_CHARACTER  # A list of five zeros for player 2
     def setMatrix(self):
         if turn%2 == 0:
             self.currentMatrix = self.player1Matrix
         else:
             self.currentMatrix = self.player2Matrix
-
     def updateMatrix(self,inputIndex):
         trait_color, entangled_color, trait_index, entangled_trait_index = measure_trait(self.qc,inputIndex)
         if((entangled_color != None) and (entangled_trait_index != None)):
@@ -95,18 +95,16 @@ class BoardState:
         self.turn = self.turn + 1
         return self.currentMatrix  ##TODO:send currentMatrix to front end
     
-    def check_guess(self, player_guessing, character_guessed, trait_guessed, guessed_color):
-        qubit_index = (character_guessed - 1) * TRAITS_PER_CHARACTER + trait_guessed
+    def check_guess(self, player_guessing, trait_guessed, guessed_color):
+        qubit_index = (player_guessing - 1) * TRAITS_PER_CHARACTER + trait_guessed
 
         if determinedTraits[qubit_index] == guessed_color:
             if player_guessing == self.player1Number:
-                self.player1Guesses[trait_guessed][character_guessed - 1] = 1
-            else:
-                self.player2Guesses[trait_guessed][character_guessed - 1] = 1
+                self.player1Guesses[trait_guessed] = 1
+            elif player_guessing == self.player2Number:
+                self.player2Guesses[trait_guessed] = 1
             return True
         return False
-    
-    #TODO: check if game is over
-    #def isOver(self):
-        #if all revealed or all things correct
 
+    def is_game_over(self):
+        return all(guess == 1 for guess in self.player1Guesses) or all(guess == 1 for guess in self.player2Guesses)
