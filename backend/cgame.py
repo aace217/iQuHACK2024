@@ -1,6 +1,6 @@
 # okay let's go
 
-from qiskit import QuantumCircuit as qc
+from qiskit import QuantumCircuit as qc, ClassicalRegister as cr
 import qiskit.circuit.library as qlib
 from qiskit.quantum_info import Statevector as sv
 from enum import Enum
@@ -16,25 +16,32 @@ class Trait(Enum):
 	HAIR_LENGTH = 2
 # https://quantumcomputing.stackexchange.com/questions/14305/partial-measurement-of-quantum-circuit-in-qiskit
 	
+class Ops(Enum):
+	Measure = -1
+	H = 0
+	X = 1
+	Z = 2
+	CX = 3
+	CZ = 4
+
 class Gate(Enum):
-	X = 0
-	Z = 1
-	H = 4
+	H = 0
+	X = 1
+	Z = 2
 
 class CGate(Enum):
-	CX = 2
-	CZ = 3
+	CX = 3
+	CZ = 4
 
 Q_GATES = {
+	Gate.H: qlib.HGate,
 	Gate.X: qlib.XGate,
 	Gate.Z: qlib.ZGate,
 	CGate.CX: qlib.CXGate,
 	CGate.CZ: qlib.CZGate,
-	Gate.H: qlib.HGate
 }
 
-class Ops(Gate, CGate, Enum):
-	Measure = -1
+
 
 	
 class BoardState:
@@ -55,11 +62,13 @@ class BoardState:
 	def copy(self): return BoardState(self.char_count, self.trait_count, self.who, self.is_alive, self.statevec, self.remaining, self.circuit)
 	def is_done(self): return np.unique(self.is_alive,return_counts=True)[1][1] == 1
 	def __str__(self):
-		return f"BoardState\n  who: {self.who}\n  is_alive: {self.is_alive}\n  statevector: {self.statevec}\n  probabilities: {self.render_probs()}"
-
+		return f"BoardState\n  who: {self.who}\n  is_alive: {self.is_alive}\n  statevector: {self.statevec}\n  probabilities: {self.render_probs()}\n  circuit: \n{self.circuit}"
+	def draw(self):
+		return self.circuit.draw(output="mpl")
 	def measure(self, t:Trait):
 		assert self.legal(Ops.Measure)
 		tc = self.trait_count
+		assert 0<=t<tc
 		outcome, new_c = self.statevec.measure((t+self.who*tc,))#self.chars.measure(range(t,len(self.chars.dims()),TRAIT_COUNT))
 		outcome = np.array([int(x) for x in outcome])
 		print(f"bits {range(t,len(self.statevec.dims()),tc)} measured!")
@@ -70,32 +79,39 @@ class BoardState:
 		print(self.is_alive, (outcome ^ outcome[self.who]))
 		new_state.is_alive = self.is_alive & (outcome ^ outcome[self.who])
 		new_state.remaining = self.remaining | {Ops.Measure: self.remaining[Ops.Measure]-1}
-		new_state.circuit = self.circuit.copy().measure(t)
+		new_state.circuit = self.circuit.copy()
+		new_state.circuit.add_register(cr(1))
+		new_state.circuit.measure(t,-1)
 		return new_state
 	
 	def legal(self, op:Ops):
-		return op in self.remaining and op[self.remaining]
+		return op in self.remaining and self.remaining[op]
 
 	# def query(self, ):
 	# 	tc = self.trait_count
 	
-	def gate(self, gate: Gate, source: Trait):
+	def gate(self, gate: Gate, target: Trait):
 		assert self.legal(gate)
-		tc = self.trait_count
-		source_bit = source[0]*tc+source[1]
+		tc, cc = self.trait_count, self.char_count
+		assert 0<=target<tc
 		new_state = self.copy()
-		new_state.statevec = self.statevec.evolve(Q_GATES[gate](), qargs=(source_bit,))
+		for t_bit in range(target,tc*cc,tc):
+			new_state.statevec = new_state.statevec.evolve(Q_GATES[gate](), qargs=(t_bit,))
 		new_state.remaining = self.remaining | {gate: self.remaining[gate]-1}
+		new_state.circuit = self.circuit.copy()
+		new_state.circuit.append(Q_GATES[gate](),qargs=(target,))
 		return new_state
 
 	def c_gate(self, c_gate: CGate, source: Trait, target: Trait):
 		assert self.legal(c_gate)
-		tc = self.trait_count
-		source_bit = source[0]*tc+source[1]
-		target_bit = target[0]*tc+target[1]
+		tc, cc = self.trait_count, self.char_count
+		assert 0<=source<tc and 0<=target<tc
 		new_state = self.copy()
-		new_state.statevec = self.statevec.evolve(Q_GATES[c_gate](),qargs=(source_bit,target_bit))
+		for i in range(0,tc*cc,tc):
+			new_state.statevec = new_state.statevec.evolve(Q_GATES[c_gate](), qargs=(i+source,i+target,))
 		new_state.remaining = self.remaining | {c_gate: self.remaining[c_gate]-1}
+		new_state.circuit = self.circuit.copy()
+		new_state.circuit.append(Q_GATES[c_gate](),qargs=(source,target))
 		return new_state
 
 	def render_probs(self):
@@ -105,13 +121,15 @@ class BoardState:
 		return [bzzt[i*tc:(i+1)*tc] for i in range(cc)]
 
 if __name__ == "__main__":
-	bs = BoardState()
+	bs = BoardState(remaining={Ops.Measure:99,Gate.X:99,CGate.CX:99})
 	print(bs)
 	bs = bs.measure(0)
 	print(bs)
 	bs = bs.measure(2)
 	print(bs)
-	bs = bs.gate(Gate.X, (0,0))
+	bs = bs.gate(Gate.X, 0)
+	print(bs)
+	bs = bs.c_gate(CGate.CX,4,3)
 	print(bs)
 	bs = bs.measure(1)
 	print(bs)

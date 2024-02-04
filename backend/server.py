@@ -49,6 +49,12 @@ def c_cgate(g_id, cgate, source, target):
 	c_games[g_id] = c_state.c_gate(c_gate,source,target)
 	return redirect(url_for("play_c", g_id=g_id)) #c_games[g_id]
 
+@app.route("/play_c/<g_id>/draw",methods=["GET"])
+def c_draw(g_id):
+	g_id = int(g_id)
+	if g_id not in c_games: abort(404)
+	return c_games[g_id].draw()
+
 # @app.route("/play/<g_id>/query/<>", methods=["POST"])
 # def 
 

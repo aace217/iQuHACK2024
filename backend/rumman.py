@@ -73,4 +73,4 @@ measured_color, entangled_color, trait_index, entangled_trait_index = measure_tr
 
 
 print(f"Measurement result for qubit {trait_index}: {measured_color}")
-print(f"Measurement result for its entangled qubit {entangled_trait_index}: {entangled_color}")
+print(f"Measurement result for its entangled qubit {entangled_trait_index}: {entangled_color}")[]Pers
