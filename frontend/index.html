@@ -13,6 +13,9 @@
             background-color: #f0f0f0;
             font-family: Arial, sans-serif;
         }
+        .hidden {
+            display: none;
+        }
 
         h1 {
             margin-bottom: 20px;
@@ -20,8 +23,8 @@
 
         #characters {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 100px;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 20px;
             margin-bottom: 20px;
         }
 
@@ -51,8 +54,8 @@
             background-color: #ffe0bd;
             border-radius: 50%;
             box-shadow: 0 0 2.5px rgba(0, 0, 0, 0.3);
-            margin-left: 150px;
-            margin-right: 50px;
+            /* margin-left: 150px; */
+            /* margin-right: 50px; */
         }
         .lastface {
             position: relative;
@@ -61,8 +64,8 @@
             background-color: #ffe0bd;
             border-radius: 50%;
             box-shadow: 0 0 2.5px rgba(0, 0, 0, 0.3);
-            margin-left: 150px;
-            margin-right: 150px;
+            /* margin-left: 150px;
+            margin-right: 150px; */
         }
 
         .hair {
@@ -95,8 +98,8 @@
         }
 
         .pupil {
-            width: 3.75px;
-            height: 3.75px;
+            width: 7px;
+            height: 7px;
             background-color: #333;
             border-radius: 50%;
             position: absolute;
@@ -126,122 +129,18 @@
             left: 50%;
             transform: translateX(-50%);
         }
+        .beginbutton {
+            margin: 8px;
+        }
+        
     </style>
     <title>Guess Who? Game</title>
 </head>
-<body>
 
+<body >
     <h1>Guess Who?</h1>
-
-    <div id="characters">
-        <!-- Add 10 characters (you can replace the text with your own) -->
-        <div class="character" onclick="guessCharacter('Person 1')">
-            <div class="face-box">
-                <div class="face">
-                    <div class="hair"></div>
-                    <div class="eye left-eye"><div class="pupil"></div></div>
-                    <div class="eye right-eye"><div class="pupil"></div></div>
-                    <div class="nose"></div>
-                    <div class="mouth"></div>
-                </div>
-        </div>
-        
-        <div class="character" onclick="guessCharacter('Person 2')">
-            <div class="face-box">
-                <div class="face">
-                    <div class="hair"></div>
-                    <div class="eye left-eye"><div class="pupil"></div></div>
-                    <div class="eye right-eye"><div class="pupil"></div></div>
-                    <div class="nose"></div>
-                    <div class="mouth"></div>
-                </div>
-        </div>
-
-        <div class="character" onclick="guessCharacter('Person 3')">
-            <div class="face-box">
-                <div class="face">
-                    <div class="hair"></div>
-                    <div class="eye left-eye"><div class="pupil"></div></div>
-                    <div class="eye right-eye"><div class="pupil"></div></div>
-                    <div class="nose"></div>
-                    <div class="mouth"></div>
-                </div>
-        </div>
-        
-        <div class="character" onclick="guessCharacter('Person 4')">
-            <div class="face-box">
-                <div class="face">
-                    <div class="hair"></div>
-                    <div class="eye left-eye"><div class="pupil"></div></div>
-                    <div class="eye right-eye"><div class="pupil"></div></div>
-                    <div class="nose"></div>
-                    <div class="mouth"></div>
-                </div>
-        </div>
-        
-        <div class="character" onclick="guessCharacter('Person 5')">
-            <div class="face-box">
-                <div class="face">
-                    <div class="hair"></div>
-                    <div class="eye left-eye"><div class="pupil"></div></div>
-                    <div class="eye right-eye"><div class="pupil"></div></div>
-                    <div class="nose"></div>
-                    <div class="mouth"></div>
-                </div>
-        </div>
-
-        <div class="character" onclick="guessCharacter('Person 6')">
-            <div class="face-box">
-                <div class="lastface">
-                    <div class="hair" id="hair6"></div>
-                    <div class="eye left-eye"><div class="pupil"></div></div>
-                    <div class="eye right-eye"><div class="pupil"></div></div>
-                    <div class="nose"></div>
-                    <div class="mouth"></div>
-                </div>
-        </div>
-        <!-- Add more characters as needed -->
-    </div>
-
-    <div id="result"></div>
-
-    <script>
-        function guessCharacter(person) {
-            var colorDiv = document.getElementById("hair6");
-
-    // Generate a random color
-            var randomColor = getRandomColor();
-
-    // Set the background color of the element
-            colorDiv.style.backgroundColor = randomColor;
-        }
-
-
-
-        // Function to change hair color every second
-        function changeHairColor() {
-            const lastFaceHair = document.getElementById('lastFaceHair');
-
-            setInterval(() => {
-                const randomColor = getRandomColor();
-                lastFaceHair.style.backgroundColor = randomColor;
-            }, 1000);
-        }
-
-        // Function to generate a random color
-        function getRandomColor() {
-            const letters = '0123456789ABCDEF';
-            let color = '#';
-            for (let i = 0; i < 6; i++) {
-                color += letters[Math.floor(Math.random() * 16)];
-            }
-            return color;
-        }
-
-        // Call the function to start changing hair color
-        changeHairColor();
-
-    </script>
-
+    <button class = "beginbutton" onclick="window.location='/new_c'">Circuit Game</button>
+    <br>
+    <button class = "beginbutton" onclick="window.location='/new_r'">Entangled Game</button>
 </body>
 </html>

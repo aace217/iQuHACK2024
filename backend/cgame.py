@@ -3,11 +3,15 @@
 from qiskit import QuantumCircuit as qc, ClassicalRegister as cr
 import qiskit.circuit.library as qlib
 from qiskit.quantum_info import Statevector as sv
+import matplotlib as mpl
+import matplotlib.pyplot as plt
 from enum import Enum
 import numpy as np
 import random
 
-CHAR_COUNT = 1
+
+CHAR_COUNT = 3
+EPS = 1e-10
 
 TRAIT_COUNT = 5
 class Trait(Enum):
@@ -18,11 +22,6 @@ class Trait(Enum):
 	
 class Ops(Enum):
 	Measure = -1
-	H = 0
-	X = 1
-	Z = 2
-	CX = 3
-	CZ = 4
 
 class Gate(Enum):
 	H = 0
@@ -40,8 +39,6 @@ Q_GATES = {
 	CGate.CX: qlib.CXGate,
 	CGate.CZ: qlib.CZGate,
 }
-
-
 
 	
 class BoardState:
@@ -63,13 +60,18 @@ class BoardState:
 	def is_done(self): return np.unique(self.is_alive,return_counts=True)[1][1] == 1
 	def __str__(self):
 		return f"BoardState\n  who: {self.who}\n  is_alive: {self.is_alive}\n  statevector: {self.statevec}\n  probabilities: {self.render_probs()}\n  circuit: \n{self.circuit}"
-	def draw(self):
-		return self.circuit.draw(output="mpl")
+	def draw(self,filename):
+		mpl.use("agg")
+		img = self.circuit.draw(output="mpl", interactive=False)
+		plt.savefig(filename)
+		plt.close()
+		# return img
+		
 	def measure(self, t:Trait):
 		assert self.legal(Ops.Measure)
-		tc = self.trait_count
+		tc,cc = self.trait_count,self.char_count
 		assert 0<=t<tc
-		outcome, new_c = self.statevec.measure((t+self.who*tc,))#self.chars.measure(range(t,len(self.chars.dims()),TRAIT_COUNT))
+		outcome, new_c = self.statevec.measure(range(t,tc*cc,tc)) #self.statevec.measure((t+self.who*tc,))#
 		outcome = np.array([int(x) for x in outcome])
 		print(f"bits {range(t,len(self.statevec.dims()),tc)} measured!")
 		print(f"outcome: {outcome}")
@@ -85,7 +87,7 @@ class BoardState:
 		return new_state
 	
 	def legal(self, op:Ops):
-		return op in self.remaining and self.remaining[op]
+		return True#op in self.remaining and self.remaining[op]
 
 	# def query(self, ):
 	# 	tc = self.trait_count
@@ -105,7 +107,7 @@ class BoardState:
 	def c_gate(self, c_gate: CGate, source: Trait, target: Trait):
 		assert self.legal(c_gate)
 		tc, cc = self.trait_count, self.char_count
-		assert 0<=source<tc and 0<=target<tc
+		assert 0<=source<tc and 0<=target<tc and source != target
 		new_state = self.copy()
 		for i in range(0,tc*cc,tc):
 			new_state.statevec = new_state.statevec.evolve(Q_GATES[c_gate](), qargs=(i+source,i+target,))
@@ -117,7 +119,7 @@ class BoardState:
 	def render_probs(self):
 		cc, tc = self.char_count, self.trait_count
 		bzzt = [self.statevec.probabilities([i])[1] for i in range(cc*tc)]
-		bzzt = [2 if j==1 else 0 if j==0 else 1 for j in bzzt]
+		bzzt = [2 if j>1-EPS else 0 if j<0+EPS else 1 for j in bzzt]
 		return [bzzt[i*tc:(i+1)*tc] for i in range(cc)]
 
 if __name__ == "__main__":
@@ -133,3 +135,4 @@ if __name__ == "__main__":
 	print(bs)
 	bs = bs.measure(1)
 	print(bs)
+	bs.draw()
