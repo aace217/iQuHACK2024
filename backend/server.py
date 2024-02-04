@@ -1,5 +1,6 @@
 from flask import Flask, redirect, url_for, render_template, abort
 from cgame import BoardState, Trait, CGate, Gate
+from rgame import 
 
 c_games: dict[int,BoardState] = dict()
 unused_cgame_ids = [0]

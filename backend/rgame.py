@@ -69,31 +69,30 @@ def measure_trait(qc, trait_index):
     determinedTraits[entangled_trait_index] = entangled_color
     return trait_color, entangled_color, trait_index, entangled_trait_index
 
-isOver = False
 turn = 0
 peopleNumber = 4
 traitNumber = 5
-player1Matrix = np.full((traitNumber,peopleNumber),None)
-player2Matrix = np.full((traitNumber,peopleNumber),None)
+players = random.sample(range(1, 5), 2)
 
-qc = create_game_circuit()
-
-while isOver == False:
-    if turn%2 == 0:
-        currentMatrix = player1Matrix
-    else:
-        currentMatrix = player2Matrix
-
-    #data from daniel will be JSON with a attribute and guess
-    inputIndex = 0 #TODO:Change to get data from Front End
-    trait_color, entangled_color, trait_index, entangled_trait_index = measure_trait(qc,inputIndex)
-    if((entangled_color != None) and (entangled_trait_index != None)):
-        currentMatrix[entangled_trait_index % 5][entangled_trait_index//5 + 1] = entangled_color
-    if currentMatrix[trait_index % 5][entangle]
-    ##TODO:Also keep track of players idea: even numbers could be p1 and odd could be p2
-    ##TODO:Create/update matrix and update the turn
-    ##TODO: check if game is over
-    turn = turn + 1
-print(qc)
-
+class BoardState:
+    def __init__(self,turn = random.randrange(0,1),player1Number = players[0], player2Number = players[1]):
+        self.qc = create_game_circuit()
+        self.player1Matrix = np.full((traitNumber,peopleNumber),None)
+        self.player2Matrix = np.full((traitNumber,peopleNumber),None)
+    def setMatrix(self):
+        if turn%2 == 0:
+            self.currentMatrix = self.player1Matrix
+        else:
+            self.currentMatrix = self.player2Matrix
+    def updateBoard(self,inputIndex):
+        trait_color, entangled_color, trait_index, entangled_trait_index = measure_trait(self.qc,inputIndex)
+        if((entangled_color != None) and (entangled_trait_index != None)):
+            self.currentMatrix[entangled_trait_index % 5][entangled_trait_index//5 + 1] = entangled_color
+        if self.currentMatrix[trait_index % 5][trait_index//5 + 1] == None:
+            self.currentMatrix[trait_index % 5][trait_index//5 + 1] = trait_color
+        self.turn = self.turn + 1
+        return self.currentMatrix  ##TODO:send currentMatrix to front end
+    #TODO: check if game is over
+    #def isOver(self):
+        #if all revealed or all things correct
 
