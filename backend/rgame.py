@@ -6,7 +6,7 @@ NUM_CHARACTERS = 4
 TRAITS_PER_CHARACTER = 5
 NUM_QUBITS = NUM_CHARACTERS * TRAITS_PER_CHARACTER
 
-colors = ['red', 'blue', 'orange', 'green', 'black']
+colors = ['red', 'blue', 'orange', 'green', 'purple']
 trait_color_pairs = {}
 
 def generate_color_pairs():
@@ -77,13 +77,15 @@ players = random.sample(range(1, 5), 2)
 class BoardState:
     def __init__(self,turn = random.randrange(0,1),player1Number = players[0], player2Number = players[1]):
         self.qc = create_game_circuit()
-        self.player1Matrix = np.full((traitNumber,peopleNumber),None)
-        self.player2Matrix = np.full((traitNumber,peopleNumber),None)
+        self.player1Matrix = np.full((traitNumber,peopleNumber),"black")
+        self.player2Matrix = np.full((traitNumber,peopleNumber),"black")
+        
     def setMatrix(self):
         if turn%2 == 0:
             self.currentMatrix = self.player1Matrix
         else:
             self.currentMatrix = self.player2Matrix
+
     def updateMatrix(self,inputIndex):
         trait_color, entangled_color, trait_index, entangled_trait_index = measure_trait(self.qc,inputIndex)
         if((entangled_color != None) and (entangled_trait_index != None)):
@@ -92,6 +94,18 @@ class BoardState:
             self.currentMatrix[trait_index % 5][trait_index//5 + 1] = trait_color
         self.turn = self.turn + 1
         return self.currentMatrix  ##TODO:send currentMatrix to front end
+    
+    def check_guess(self, player_guessing, character_guessed, trait_guessed, guessed_color):
+        qubit_index = (character_guessed - 1) * TRAITS_PER_CHARACTER + trait_guessed
+
+        if determinedTraits[qubit_index] == guessed_color:
+            if player_guessing == self.player1Number:
+                self.player1Guesses[trait_guessed][character_guessed - 1] = 1
+            else:
+                self.player2Guesses[trait_guessed][character_guessed - 1] = 1
+            return True
+        return False
+    
     #TODO: check if game is over
     #def isOver(self):
         #if all revealed or all things correct
