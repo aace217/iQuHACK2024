@@ -74,18 +74,26 @@ turn = 0
 peopleNumber = 4
 traitNumber = 5
 player1Matrix = np.full((traitNumber,peopleNumber),None)
-print(player1Matrix)
+player2Matrix = np.full((traitNumber,peopleNumber),None)
+
 qc = create_game_circuit()
 
 while isOver == False:
-    if turn == 0:
-        turn = random.randrange(0,100)%2
+    if turn%2 == 0:
+        currentMatrix = player1Matrix
+    else:
+        currentMatrix = player2Matrix
+
     #data from daniel will be JSON with a attribute and guess
-    #measure_trait(qc,getDAtafromDaniel)
+    inputIndex = 0 #TODO:Change to get data from Front End
+    trait_color, entangled_color, trait_index, entangled_trait_index = measure_trait(qc,inputIndex)
+    if((entangled_color != None) and (entangled_trait_index != None)):
+        currentMatrix[entangled_trait_index % 5][entangled_trait_index//5 + 1] = entangled_color
+    if currentMatrix[trait_index % 5][entangle]
     ##TODO:Also keep track of players idea: even numbers could be p1 and odd could be p2
     ##TODO:Create/update matrix and update the turn
     ##TODO: check if game is over
-    
+    turn = turn + 1
 print(qc)
 
 
