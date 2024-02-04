@@ -11,7 +11,7 @@ import json
 app = Flask(__name__, template_folder=".")
 
 #Receives data from html
-@app.route('/process_data', methods=['POST'])
+@app.route('process_data/', methods=['POST'])
 def process_data():
     data = request.get_json()
     color = data.get('value')

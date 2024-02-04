@@ -9,11 +9,12 @@ NUM_CHARACTERS = 4
 TRAITS_PER_CHARACTER = 5
 NUM_QUBITS = NUM_CHARACTERS * TRAITS_PER_CHARACTER
 
-colors = ['red', 'blue', 'orange', 'green', 'purple']
+COLORS = ['red', 'blue', 'orange', 'green', 'purple']
+TRAITS = [ 'hair', 'left eye', 'right eye', 'nose', 'mouth']
 trait_color_pairs = {}
 
 def generate_color_pairs():
-    all_color_pairs = [(colors[i], colors[j]) for i in range(len(colors)) for j in range(i+1, len(colors))]
+    all_color_pairs = [(COLORS[i], COLORS[j]) for i in range(len(COLORS)) for j in range(i+1, len(COLORS))]
     random.shuffle(all_color_pairs)
     for trait in range(TRAITS_PER_CHARACTER):
         trait_color_pairs[trait] = all_color_pairs.pop()
@@ -84,6 +85,8 @@ class BoardState:
         self.player2Matrix = np.full((traitNumber,peopleNumber),"black")
         self.player1Guesses = [0] * TRAITS_PER_CHARACTER  # A list of five zeros for player 1
         self.player2Guesses = [0] * TRAITS_PER_CHARACTER  # A list of five zeros for player 2
+        self.turn = 0
+        self.setMatrix()
     def setMatrix(self):
         if turn%2 == 0:
             self.currentMatrix = self.player1Matrix
@@ -92,11 +95,11 @@ class BoardState:
     def updateMatrix(self,inputIndex):
         trait_color, entangled_color, trait_index, entangled_trait_index = measure_trait(self.qc,inputIndex)
         if((entangled_color != None) and (entangled_trait_index != None)):
-            self.currentMatrix[entangled_trait_index % 5][entangled_trait_index//5 + 1] = entangled_color
-        if self.currentMatrix[trait_index % 5][trait_index//5 + 1] == None:
-            self.currentMatrix[trait_index % 5][trait_index//5 + 1] = trait_color
+            self.currentMatrix[entangled_trait_index % 5][entangled_trait_index//5] = entangled_color
+        if self.currentMatrix[trait_index % 5][trait_index//5 ] == None:
+            self.currentMatrix[trait_index % 5][trait_index//5] = trait_color
         self.turn = self.turn + 1
-        return self.currentMatrix  ##TODO:send currentMatrix to front end
+        return self.currentMatrix.tolist()  ##TODO:send currentMatrix to front end
     
     def check_guess(self, player_guessing, trait_guessed, guessed_color):
         qubit_index = (player_guessing - 1) * TRAITS_PER_CHARACTER + trait_guessed
@@ -122,25 +125,3 @@ class BoardState:
 
 
 
-app = Flask(__name__, template_folder=".")
-
-#Receives data from html
-@app.route('/process_data', methods=['POST'])
-def process_data():
-    data = request.get_json()
-    color = data.get('value')
-    attribute = data.get('value2')
-    print('Received value:', data)
-    print('Received value:', attribute)
-    return jsonify({'result': 'Data received successfully'})
-
-#Sends data to html
-@app.route('/')
-def receiveData():
-    return render_template('rFront4.html', view=[
-            [2, 2, 2, 2],
-            [1, 1, 1, 1],
-            [1, 1, 1, 1],
-            [1, 1, 1, 1],
-            [1, 1, 1, 1]
-        ])

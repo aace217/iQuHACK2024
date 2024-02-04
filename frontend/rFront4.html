@@ -196,17 +196,17 @@
         <div>
             <p> Select color: </p>
             <select id="ColorSelector" onchange="updateColor">
-                <option value="Red">Red</option>
-                <option value="Blue">Blue</option>
-                <option value="Yellow">Yellow</option>
-                <option value="Purple">Purple</option>
-                <option value="Green">Green</option>
+                <option value="red">Red</option>
+                <option value="blue">Blue</option>
+                <option value="orange">Orange</option>
+                <option value="green">Green</option>
+                <option value="purple">Purple</option>
             </select>
             <p> Attribute: </p>
             <select id="AttributeSelector" onchange="updateAttribute">
                 <option value="hair">hair</option>
-                <option value="left pupil">left pupil</option>
-                <option value="right pupil">right pupil</option>
+                <option value="left eye">left pupil</option>
+                <option value="right eye">right pupil</option>
                 <option value="nose">nose</option>
                 <option value="mouth">mouth</option>
             </select>
@@ -244,7 +244,7 @@
             };
 
             // Make a POST request to the Flask server
-            fetch('/process_data', {
+            fetch('measure/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -261,7 +261,7 @@
                 console.error('Error:', error);
                 alert('An error occurred while processing data.');
             });
-            input = {{view}};
+            input = {{view|tojson}};
             changeColor(input);
         }
 
@@ -308,7 +308,7 @@
         }
     }
     function startup() {
-        input = {{view}};
+        input = {{view|tojson}};
         changeColor(input);
         showContent('abc');
         

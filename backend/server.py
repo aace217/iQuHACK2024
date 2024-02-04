@@ -1,6 +1,6 @@
-from flask import Flask, redirect, url_for, render_template, abort, send_file, request
+from flask import Flask, redirect, url_for, render_template, abort, send_file, request, jsonify
 from cgame import BoardState as cBoardState, Trait, CGate, Gate, Ops
-from rgame import BoardState as rBoardState
+from rgame import BoardState as rBoardState, COLORS, TRAITS
 import json
 
 c_games: dict[int,cBoardState] = dict()
@@ -91,7 +91,7 @@ def play_r(game_id):
     if game_id not in games:
         abort(404)
     game_state = games[game_id]
-    return render_template("rFront4.html", game_id=game_id, game_state=game_state)
+    return render_template("rFront4.html", game_id=game_id, game_state=game_state, view=game_state.currentMatrix.tolist())
 
 @app.route("/play_r/<game_id>/measure/", methods=["POST"])
 def measure_trait(game_id):
@@ -100,32 +100,25 @@ def measure_trait(game_id):
         abort(404)
     
     data = request.get_json()
-    color = data.get('value')
-    attribute = data.get('value2')
-    print('Received value:', data)
+    color = COLORS.index(data.get('value'))
+    attribute = TRAITS.index(data.get('value2'))
+    print('Received value:', color)
     print('Received value:', attribute)
-    # trait_index = data['trait_index'] 
     game_state = games[game_id]
     
-    updated_matrix = game_state.updateBoard(trait_index)
+    updated_matrix = game_state.updateMatrix(attribute)
     
     return json.dumps({"success": True, "updated_matrix": updated_matrix}), 200, {'ContentType':'application/json'}
 
-#Receives data from html
-@app.route('/process_data', methods=['POST'])
-def process_data():
-
-    return jsonify({'result': 'Data received successfully'})
 
 #Sends data to html
-@app.route('/')
+@app.route('/process_data/')
 def receiveData():
     return render_template('rFront4.html', view=[
-            [2, 2, 2, 2],
-            [1, 1, 1, 1],
-            [1, 1, 1, 1],
-            [1, 1, 1, 1],
-            [1, 1, 1, 1]
+            [2, 2, 2, 2, 2],
+            [1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1],
         ])
 
 if __name__ == "__main__":
