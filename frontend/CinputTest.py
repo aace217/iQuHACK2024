@@ -4,7 +4,7 @@ import subprocess
 app = Flask(__name__,template_folder=".")
 @app.route("/",methods=["GET"])
 def sendData(tbd='#eb4034'):
-    return render_template('finalTest.html', view=[
+    return render_template('rFront.html', view=[
             [2, 2, 2, 2, 2, 2],
             [1, 1, 1, 1, 1, 1],
             [1, 1, 1, 1, 1, 1],
