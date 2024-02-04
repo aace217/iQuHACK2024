@@ -135,7 +135,7 @@
 
     <div id="characters">
         <!-- Add 10 characters (you can replace the text with your own) -->
-        <div class="character" onclick="guessCharacter('Person 1')">
+        <div class="character" onclick="guessCharacter2('Person 1')">
             <div class="face-box">
                 <div class="face">
                     <div class="hair"></div>
@@ -193,7 +193,7 @@
         <div class="character" onclick="guessCharacter('Person 6')">
             <div class="face-box">
                 <div class="lastface">
-                    <div class="hair"></div>
+                    <div class="hair" id="hair6"></div>
                     <div class="eye left-eye"><div class="pupil"></div></div>
                     <div class="eye right-eye"><div class="pupil"></div></div>
                     <div class="nose"></div>
@@ -207,24 +207,13 @@
 
     <script>
         function guessCharacter(person) {
-            const correctPerson = 'Person 2'; // Change this to the correct person
-            const resultElement = document.getElementById('result');
+            var colorDiv = document.getElementById("hair6");
 
-            if (person === correctPerson) {
-                resultElement.textContent = 'Congratulations! You guessed correctly.';
-                resultElement.style.color = 'green';
-            } else {
-                resultElement.textContent = 'Oops! Wrong guess. Try again.';
-                resultElement.style.color = 'red';
-            }
+    // Generate a random color
+            var randomColor = getRandomColor();
 
-            resultElement.style.display = 'block';
-
-            // Disable clicking on characters after a guess
-            const characters = document.querySelectorAll('.character');
-            characters.forEach(char => {
-                char.style.pointerEvents = 'none';
-            });
+    // Set the background color of the element
+            colorDiv.style.backgroundColor = randomColor;
         }
 
 

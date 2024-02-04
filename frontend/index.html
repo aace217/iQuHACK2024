@@ -3,189 +3,245 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <title>Quantum Guess Who</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        #characters {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 100px;
+            margin-bottom: 20px;
+        }
+
+        .character {
+            width: 100px;
+            height: 100px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            text-align: center;
+
+        }
+
+        #result {
+            font-weight: bold;
+            display: none;
+            margin-top: 20px;
+        }
+        .face {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            background-color: #ffe0bd;
+            border-radius: 50%;
+            box-shadow: 0 0 2.5px rgba(0, 0, 0, 0.3);
+            margin-left: 150px;
+            margin-right: 50px;
+        }
+        .lastface {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            background-color: #ffe0bd;
+            border-radius: 50%;
+            box-shadow: 0 0 2.5px rgba(0, 0, 0, 0.3);
+            margin-left: 150px;
+            margin-right: 150px;
+        }
+
+        .hair {
+            position: absolute;
+            width: 100%;
+            height: 7.5px;
+            background-color: #555;
+            top: 0;
+            left: 0;
+            border-radius: 50% 50% 0 0;
+        }
+
+        .eye {
+            position: absolute;
+            width: 10px;
+            height: 5px;
+            background-color: #fff;
+            border-radius: 50%;
+            border: 0.5px solid #333;
+        }
+
+        .left-eye {
+            top: 30%;
+            left: 25%;
+        }
+
+        .right-eye {
+            top: 30%;
+            left: 50%;
+        }
+
+        .pupil {
+            width: 3.75px;
+            height: 3.75px;
+            background-color: #333;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .nose {
+            position: absolute;
+            width: 3.75px;
+            height: 10px;
+            background-color: #333;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .mouth {
+            position: absolute;
+            width: 25px;
+            height: 5px;
+            background-color: #333;
+            border-bottom-left-radius: 12.5px;
+            border-bottom-right-radius: 12.5px;
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    </style>
+    <title>Guess Who? Game</title>
 </head>
 <body>
-    <nav class="topnav">
-        <h1 class="bar">Quantum Guess Who</h1>
-    </nav>
-    <div class="inputs">
-        <form id="guessForm">
-            <label for="attributeDropdown">Select Attribute | </label>
-            <select id="attributeDropdown" name="attribute" onchange="updateNounOptions()">
-                <option value="hat">Hat Color</option>
-                <option value="eye">Eye Color</option>
-                <option value="shirt">Shirt Color</option>
-                <!-- Add more attributes as needed -->
-            </select>
 
-            <br>
+    <h1>Guess Who?</h1>
 
-            <label for="nounDropdown">Select Noun | </label>
-            <select id="nounDropdown" name="noun">
-                <!-- Options will be dynamically added here based on the selected attribute -->
-            </select>
+    <div id="characters">
+        <!-- Add 10 characters (you can replace the text with your own) -->
+        <div class="character" onclick="guessCharacter('Person 1')">
+            <div class="face-box">
+                <div class="face">
+                    <div class="hair"></div>
+                    <div class="eye left-eye"><div class="pupil"></div></div>
+                    <div class="eye right-eye"><div class="pupil"></div></div>
+                    <div class="nose"></div>
+                    <div class="mouth"></div>
+                </div>
+        </div>
+        
+        <div class="character" onclick="guessCharacter('Person 2')">
+            <div class="face-box">
+                <div class="face">
+                    <div class="hair"></div>
+                    <div class="eye left-eye"><div class="pupil"></div></div>
+                    <div class="eye right-eye"><div class="pupil"></div></div>
+                    <div class="nose"></div>
+                    <div class="mouth"></div>
+                </div>
+        </div>
 
-            <br>
+        <div class="character" onclick="guessCharacter('Person 3')">
+            <div class="face-box">
+                <div class="face">
+                    <div class="hair"></div>
+                    <div class="eye left-eye"><div class="pupil"></div></div>
+                    <div class="eye right-eye"><div class="pupil"></div></div>
+                    <div class="nose"></div>
+                    <div class="mouth"></div>
+                </div>
+        </div>
+        
+        <div class="character" onclick="guessCharacter('Person 4')">
+            <div class="face-box">
+                <div class="face">
+                    <div class="hair"></div>
+                    <div class="eye left-eye"><div class="pupil"></div></div>
+                    <div class="eye right-eye"><div class="pupil"></div></div>
+                    <div class="nose"></div>
+                    <div class="mouth"></div>
+                </div>
+        </div>
+        
+        <div class="character" onclick="guessCharacter('Person 5')">
+            <div class="face-box">
+                <div class="face">
+                    <div class="hair"></div>
+                    <div class="eye left-eye"><div class="pupil"></div></div>
+                    <div class="eye right-eye"><div class="pupil"></div></div>
+                    <div class="nose"></div>
+                    <div class="mouth"></div>
+                </div>
+        </div>
 
-            <button type="button" onclick="submitGuess()">Submit Guess</button>
-        </form>
+        <div class="character" onclick="guessCharacter('Person 6')">
+            <div class="face-box">
+                <div class="lastface">
+                    <div class="hair" id="hair6"></div>
+                    <div class="eye left-eye"><div class="pupil"></div></div>
+                    <div class="eye right-eye"><div class="pupil"></div></div>
+                    <div class="nose"></div>
+                    <div class="mouth"></div>
+                </div>
+        </div>
+        <!-- Add more characters as needed -->
     </div>
-    <body>
 
-        <h2>Guess Who?</h2>
-        <div class="layer layer1">
-            <img src="black_blue_blue.jpg" alt="Image 1">
-            <img src="black_blue_red.jpg" alt="Image 2">
-            <img src="black_brown_blue.jpg" alt="Image 3">
-            <img src="black_brown_red.jpg" alt="Image 4">
-            <img src="red_blue_blue.jpg" alt="Image 5">
-            <img src="red_blue_red.jpg" alt="Image 6">
-            <img src="red_brown_blue.jpg" alt="Image 7">
-            <img src="red_brown_red.jpg" alt="Image 8">
-        </div>
-    
-        <div class="layer layer2">
-            <img src="black_blue_red.jpg" alt="Image 2">
-            <img src="black_brown_blue.jpg" alt="Image 3">
-            <img src="black_brown_red.jpg" alt="Image 4">
-            <img src="red_blue_blue.jpg" alt="Image 5">
-            <img src="red_blue_red.jpg" alt="Image 6">
-            <img src="red_brown_blue.jpg" alt="Image 7">
-            <img src="red_brown_red.jpg" alt="Image 8">
-            <img src="black_blue_blue.jpg" alt="Image 1">
-        </div>
-    
-        <div class="layer layer3">
-            <img src="black_brown_blue.jpg" alt="Image 3">
-            <img src="black_brown_red.jpg" alt="Image 4">
-            <img src="red_blue_blue.jpg" alt="Image 5">
-            <img src="red_blue_red.jpg" alt="Image 6">
-            <img src="red_brown_blue.jpg" alt="Image 7">
-            <img src="red_brown_red.jpg" alt="Image 8">
-            <img src="black_blue_blue.jpg" alt="Image 1">
-            <img src="black_blue_red.jpg" alt="Image 2">
-        </div>
-
-        <div class="layer layer4">
-            <img src="black_brown_red.jpg" alt="Image 4">
-            <img src="red_blue_blue.jpg" alt="Image 5">
-            <img src="red_blue_red.jpg" alt="Image 6">
-            <img src="red_brown_blue.jpg" alt="Image 7">
-            <img src="red_brown_red.jpg" alt="Image 8">
-            <img src="black_blue_blue.jpg" alt="Image 1">
-            <img src="black_blue_red.jpg" alt="Image 2">
-            <img src="black_brown_blue.jpg" alt="Image 3">
-        </div>
-
-        <div class="layer layer5">
-            <img src="red_blue_blue.jpg" alt="Image 5">
-            <img src="red_blue_red.jpg" alt="Image 6">
-            <img src="red_brown_blue.jpg" alt="Image 7">
-            <img src="red_brown_red.jpg" alt="Image 8">
-            <img src="black_blue_blue.jpg" alt="Image 1">
-            <img src="black_blue_red.jpg" alt="Image 2">
-            <img src="black_brown_blue.jpg" alt="Image 3">
-            <img src="black_brown_red.jpg" alt="Image 4">
-        </div>
-
-        <div class="layer layer6">
-            <img src="red_blue_red.jpg" alt="Image 6">
-            <img src="red_brown_blue.jpg" alt="Image 7">
-            <img src="red_brown_red.jpg" alt="Image 8">
-            <img src="black_blue_blue.jpg" alt="Image 1">
-            <img src="black_blue_red.jpg" alt="Image 2">
-            <img src="black_brown_blue.jpg" alt="Image 3">
-            <img src="black_brown_red.jpg" alt="Image 4">
-            <img src="red_blue_blue.jpg" alt="Image 5">
-        </div>
-
-        <div class="layer layer7">
-            <img src="red_brown_blue.jpg" alt="Image 7">
-            <img src="red_brown_red.jpg" alt="Image 8">
-            <img src="black_blue_blue.jpg" alt="Image 1">
-            <img src="black_blue_red.jpg" alt="Image 2">
-            <img src="black_brown_blue.jpg" alt="Image 3">
-            <img src="black_brown_red.jpg" alt="Image 4">
-            <img src="red_blue_blue.jpg" alt="Image 5">
-            <img src="red_blue_red.jpg" alt="Image 6">
-        </div>
-
-        <div class="layer layer8">
-            <img src="red_brown_red.jpg" alt="Image 8">
-            <img src="black_blue_blue.jpg" alt="Image 1">
-            <img src="black_blue_red.jpg" alt="Image 2">
-            <img src="black_brown_blue.jpg" alt="Image 3">
-            <img src="black_brown_red.jpg" alt="Image 4">
-            <img src="red_blue_blue.jpg" alt="Image 5">
-            <img src="red_blue_red.jpg" alt="Image 6">
-            <img src="red_brown_blue.jpg" alt="Image 7">
-        </div>
-        <!-- Replace the paths with the actual paths to your image files -->
-        <!-- Add more images as needed -->
-    
-    </body>
+    <div id="result"></div>
 
     <script>
-        function updateNounOptions() {
-            var attributeDropdown = document.getElementById("attributeDropdown");
-            var nounDropdown = document.getElementById("nounDropdown");
+        function guessCharacter(person) {
+            var colorDiv = document.getElementById("hair6");
 
-            // Clear existing options
-            nounDropdown.innerHTML = "";
+    // Generate a random color
+            var randomColor = getRandomColor();
 
-            // Get the selected attribute
-            var selectedAttribute = attributeDropdown.value;
+    // Set the background color of the element
+            colorDiv.style.backgroundColor = randomColor;
+        }
 
-            // Add options based on the selected attribute
-            if (selectedAttribute === "hat") {
-                addOption(nounDropdown, "black", "Black");
-                addOption(nounDropdown, "red", "Red");
-                // Add more options as needed
-            } else if (selectedAttribute === "eye") {
-                addOption(nounDropdown, "brown", "Brown");
-                addOption(nounDropdown, "blue", "Blue");
-            } else if (selectedAttribute === "shirt") {
-                addOption(nounDropdown, "maroon", "Maroon");
-                addOption(nounDropdown, "navy", "Navy");
+
+
+        // Function to change hair color every second
+        function changeHairColor() {
+            const lastFaceHair = document.getElementById('lastFaceHair');
+
+            setInterval(() => {
+                const randomColor = getRandomColor();
+                lastFaceHair.style.backgroundColor = randomColor;
+            }, 1000);
+        }
+
+        // Function to generate a random color
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
             }
-            // Add more conditions based on attributes
-
-            // You can also fetch options dynamically from the backend based on the selected attribute
-            // using AJAX if needed
+            return color;
         }
 
-        function addOption(selectElement, value, text) {
-            var option = document.createElement("option");
-            option.value = value;
-            option.text = text;
-            selectElement.add(option);
-        }
+        // Call the function to start changing hair color
+        changeHairColor();
 
-        function submitGuess() {
-            var attribute = document.getElementById("attributeDropdown").value;
-            var noun = document.getElementById("nounDropdown").value;
-
-            // Send data to backend using AJAX
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "/submit_guess", true);
-            xhr.setRequestHeader("Content-Type", "application/json");
-
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState == 4 && xhr.status == 200) {
-                    // Handle the response from the backend if needed
-                    console.log(xhr.responseText);
-                }
-            };
-
-            var data = JSON.stringify({ "attribute": attribute, "noun": noun });
-            xhr.send(data);
-        }
-
-        // Initial update of noun options when the page loads
-        updateNounOptions();
     </script>
+
 </body>
 </html>
-

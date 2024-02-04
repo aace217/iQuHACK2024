@@ -20,7 +20,7 @@ def new_game():
 def play(g_id):
 	if g_id not in games: return False
 	c_state = games[g_id]
-	return render_template("../frontend/index.html", state = c_state)
+	return render_template("../frontend/finalTest.html", state = c_state)
 	
 @app.route("/play/<g_id>/measure/<target>", methods=["POST"])
 def query(g_id, target: Trait):
