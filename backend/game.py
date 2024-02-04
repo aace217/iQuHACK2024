@@ -49,7 +49,7 @@ class BoardState:
 	def copy(self): return BoardState(self.char_count, self.trait_count, self.who, self.is_alive, self.statevec)
 	def is_done(self): return np.unique(self.is_alive,return_counts=True)[1][1] == 1
 	def __str__(self):
-		return f"BoardState\n  who: {self.who}\n  is_alive: {self.is_alive}\n  statevector: {self.statevec}"
+		return f"BoardState\n  who: {self.who}\n  is_alive: {self.is_alive}\n  statevector: {self.statevec}\n  probabilities: {self.render_probs()}"
 
 	def measure(self, t:Trait):
 		tc = self.trait_count
@@ -64,21 +64,29 @@ class BoardState:
 		new_state.is_alive = self.is_alive & (outcome ^ outcome[self.who])
 		return new_state
 	
+	# def query(self, ):
+	# 	tc = self.trait_count
+	
 	def gate(self, gate: Gate, source: tuple[int,Trait]):
 		tc = self.trait_count
 		source_bit = source[0]*tc+source[1]
-		self.statevec.evolve(Q_GATES[gate])
+		new_state = self.copy()
+		new_state.statevec = self.statevec.evolve(Q_GATES[gate](), qargs=(source_bit,))
+		return new_state
 
 	def c_gate(self, c_gate: CGate, source: tuple[int,Trait], target: tuple[int,Trait]):
 		tc = self.trait_count
 		source_bit = source[0]*tc+source[1]
 		target_bit = target[0]*tc+target[1]
-		self.statevec.evolve(Q_GATES[c_gate])
+		new_state = self.copy()
+		new_state.statevec = self.statevec.evolve(Q_GATES[c_gate](),qargs=(source_bit,target_bit))
+		return new_state
 
-	def render(self):
+	def render_probs(self):
 		cc, tc = self.char_count, self.trait_count
-		bzzt = [self.statevec.probabilities([i]) for i in range(cc*tc)]
-		return [bzzt[i*tc:i*(tc+1)] for i in range(cc)]
+		bzzt = [self.statevec.probabilities([i])[1] for i in range(cc*tc)]
+		bzzt = [1 if j==1 else 0 if j==0 else .5 for j in bzzt]
+		return [bzzt[i*tc:(i+1)*tc] for i in range(cc)]
 
 if __name__ == "__main__":
 	bs = BoardState()

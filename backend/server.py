@@ -12,7 +12,7 @@ def hello_world():
 @app.route("/new", methods=["GET"])
 def new_game():
 	game_id = unused_game_ids.pop()
-	unused_game_ids.push(game_id+1)
+	unused_game_ids.append(game_id+1)
 	games[game_id] = BoardState()
 	return redirect(url_for("play", g_id=game_id))
 
