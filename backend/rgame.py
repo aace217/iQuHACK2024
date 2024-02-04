@@ -1,12 +1,15 @@
 from qiskit import QuantumCircuit, Aer, execute
 import random
 import numpy as np
+from flask import Flask, render_template, request, jsonify
+import subprocess
+import json
 
 NUM_CHARACTERS = 4
 TRAITS_PER_CHARACTER = 5
 NUM_QUBITS = NUM_CHARACTERS * TRAITS_PER_CHARACTER
 
-colors = ['red', 'blue', 'orange', 'green', 'black']
+colors = ['red', 'blue', 'orange', 'green', 'purple']
 trait_color_pairs = {}
 
 def generate_color_pairs():
@@ -77,8 +80,10 @@ players = random.sample(range(1, 5), 2)
 class BoardState:
     def __init__(self,turn = random.randrange(0,1),player1Number = players[0], player2Number = players[1]):
         self.qc = create_game_circuit()
-        self.player1Matrix = np.full((traitNumber,peopleNumber),None)
-        self.player2Matrix = np.full((traitNumber,peopleNumber),None)
+        self.player1Matrix = np.full((traitNumber,peopleNumber),"black")
+        self.player2Matrix = np.full((traitNumber,peopleNumber),"black")
+        self.player1Guesses = [0] * TRAITS_PER_CHARACTER  # A list of five zeros for player 1
+        self.player2Guesses = [0] * TRAITS_PER_CHARACTER  # A list of five zeros for player 2
     def setMatrix(self):
         if turn%2 == 0:
             self.currentMatrix = self.player1Matrix
@@ -92,7 +97,50 @@ class BoardState:
             self.currentMatrix[trait_index % 5][trait_index//5 + 1] = trait_color
         self.turn = self.turn + 1
         return self.currentMatrix  ##TODO:send currentMatrix to front end
-    #TODO: check if game is over
-    #def isOver(self):
-        #if all revealed or all things correct
+    
+    def check_guess(self, player_guessing, trait_guessed, guessed_color):
+        qubit_index = (player_guessing - 1) * TRAITS_PER_CHARACTER + trait_guessed
 
+        if determinedTraits[qubit_index] == guessed_color:
+            if player_guessing == self.player1Number:
+                self.player1Guesses[trait_guessed] = 1
+            elif player_guessing == self.player2Number:
+                self.player2Guesses[trait_guessed] = 1
+            return True
+        return False
+
+    def is_game_over(self):
+        return all(guess == 1 for guess in self.player1Guesses) or all(guess == 1 for guess in self.player2Guesses)
+    
+
+
+
+
+
+
+
+
+
+
+app = Flask(__name__, template_folder=".")
+
+#Receives data from html
+@app.route('/process_data', methods=['POST'])
+def process_data():
+    data = request.get_json()
+    color = data.get('value')
+    attribute = data.get('value2')
+    print('Received value:', data)
+    print('Received value:', attribute)
+    return jsonify({'result': 'Data received successfully'})
+
+#Sends data to html
+@app.route('/')
+def receiveData():
+    return render_template('rFront4.html', view=[
+            [2, 2, 2, 2],
+            [1, 1, 1, 1],
+            [1, 1, 1, 1],
+            [1, 1, 1, 1],
+            [1, 1, 1, 1]
+        ])

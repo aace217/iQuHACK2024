@@ -190,65 +190,20 @@
                 </div>
         </div>
 
-        <div class="character" onclick="guessCharacter('Person 5')">
-            <div class="face-box">
-                <div class="face">
-                    <div class="hair" id="hair4"></div>
-                    <div class="eye left-eye"><div class="pupil" id="leftpupil4"></div></div>
-                    <div class="eye right-eye"><div class="pupil" id="rightpupil4"></div></div>
-                    <div class="nose" id="nose4"></div>
-                    <div class="mouth" id="mouth4"></div>
-                </div>
-                </div>
-        </div>
         
-        <div class="character" onclick="guessCharacter('Person 6')">
-            <div class="face-box">
-                <div class="face">
-                    <div class="hair" id="hair5"></div>
-                    <div class="eye left-eye"><div class="pupil" id="leftpupil5"></div></div>
-                    <div class="eye right-eye"><div class="pupil" id="rightpupil5"></div></div>
-                    <div class="nose" id="nose5"></div>
-                    <div class="mouth" id="mouth5"></div>
-                </div>
-                </div>
-        </div>
         <!-- Add more characters as needed -->
+       
         <div>
-            <p> Select an attribute: </p>
-            <select id="Attribute" onchange="updateGateDescription()">
-                <option value="Blue Hair">Blue Hair</option>
-                <option value="Red Hair">Red Hair</option>
-                <option value="Green Left Pupil">Green Left Pupil</option>
-                <option value="Blue Left Pupil">Blue Left Pupil</option>
-                <option value="Green Right Pupil">Green Right Pupil</option>
-                <option value="Blue Right Pupil">Blue Right Pupil</option>
-                <option value="Yellow Nose">Yellow Nose</option>
-                <option value="Green Nose">Green Nose</option>
-                <option value="Yellow Mouth">Yellow Mouth</option>
-                <option value="Red Mouth">Red Mouth</option>
-            </select>
-        </div>
-        <div>
-            <p> Select gate: </p>
-            <select id="GateSelector" onchange="updateGateDescription()">
-                <option value="X Gate">X Gate</option>
-                <option value="Z Gate">Z Gate</option>
-                <option value="CX Gate">CX Gate</option>
-                <option value="CZ Gate">CZ Gate</option>
-                <option value="H Gate">H Gate</option>
-            </select>
-            <p> Character: </p>
-            <select id="CharacterSelector" onchange="updateGateDescription()">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
+            <p> Select color: </p>
+            <select id="ColorSelector" onchange="updateColor">
+                <option value="Red">Red</option>
+                <option value="Blue">Blue</option>
+                <option value="Yellow">Yellow</option>
+                <option value="Purple">Purple</option>
+                <option value="Green">Green</option>
             </select>
             <p> Attribute: </p>
-            <select id="Attribute" onchange="updateGateDescription()">
+            <select id="AttributeSelector" onchange="updateAttribute">
                 <option value="hair">hair</option>
                 <option value="left pupil">left pupil</option>
                 <option value="right pupil">right pupil</option>
@@ -267,11 +222,25 @@
 
     <script>
         let input;
-
+        var output_color;
+        var output_attribute;
+        function updateColor(e){
+            output_color = e.target.value;
+            alert(output_color)
+        }
+        
+        function updateAttribute(e) {
+            output_attribute = e.target.value;
+            
+        }
+        
         function submitData() {
             // Create a JSON object with the data to be sent
+            output_color = document.getElementById("ColorSelector").value;
+            output_attribute = document.getElementById("AttributeSelector").value;
             var jsonData = {
-                value: "test"
+                value: output_color
+                ,value2: output_attribute
             };
 
             // Make a POST request to the Flask server
@@ -292,6 +261,8 @@
                 console.error('Error:', error);
                 alert('An error occurred while processing data.');
             });
+            input = {{view}};
+            changeColor(input);
         }
 
 
@@ -337,8 +308,8 @@
         }
     }
     function startup() {
-        /*input = {{view}};
-        changeColor(input);*/
+        input = {{view}};
+        changeColor(input);
         showContent('abc');
         
         
@@ -346,75 +317,135 @@
     function makeGrad(c0,c1) {return "linear-gradient(90deg,"+c0+" 0%,"+c1+" 100%)"}
     function changeColor(input_info){
         for(let i = 0; i < 5; i++){
-            for(let j = 0; j < 6; j++){
+            for(let j = 0; j < 4; j++){
                 if (i == 0) {
-                    if(input_info[i][j] == 0) {
-                        var colorDiv = document.getElementById("hair" + j);
-                        colorDiv.style.background = "#3e14d3";
-                    }
-                    else if(input_info[i][j] == 1) {
-                        var colorDiv = document.getElementById("hair" + j);
-                        colorDiv.style.background = makeGrad("#3e14d3","#d31414");
-                    }
-                    else {
+                    if(input_info[i][j] == 'red') {
                         var colorDiv = document.getElementById("hair" + j);
                         colorDiv.style.background = "#d31414";
                     }
-                }
-                else if (i == 1) {
-                    if(input_info[i][j] == 0) {
-                        var colorDiv = document.getElementById("leftpupil" + j);
+                    else if(input_info[i][j] == 'blue') {
+                        var colorDiv = document.getElementById("hair" + j);
+                        colorDiv.style.background = "#3e14d3";
+                    }
+                    else if (input_info[i][j] == 'orange'){
+                        var colorDiv = document.getElementById("hair" + j);
+                        colorDiv.style.background = "#d35a14";
+                    }
+                    else if (input_info[i][j] == 'green'){
+                        var colorDiv = document.getElementById("hair" + j);
                         colorDiv.style.background = "#1bd314";
                     }
-                    else if(input_info[i][j] == 1) {
-                        var colorDiv = document.getElementById("leftpupil" + j);
-                        colorDiv.style.background = makeGrad("#1bd314","#3e14d3");
+                    else if (input_info[i][j] == 'black'){
+                        var colorDiv = document.getElementById("hair" + j);
+                        colorDiv.style.background = "#000000";
                     }
-                    else {
-                        var colorDiv = document.getElementById("leftpupil" + j);
+                    else{
+                        var colorDiv = document.getElementById("hair" + j);
+                        colorDiv.style.background = "#8d14d3";
+                    }
+                }
+                else if (i == 1) {
+                    if(input_info[i][j] == 'red') {
+                        var colorDiv = document.getElementById("hair" + j);
+                        colorDiv.style.background = "#d31414";
+                    }
+                    else if(input_info[i][j] == 'blue') {
+                        var colorDiv = document.getElementById("hair" + j);
                         colorDiv.style.background = "#3e14d3";
+                    }
+                    else if (input_info[i][j] == 'orange'){
+                        var colorDiv = document.getElementById("hair" + j);
+                        colorDiv.style.background = "#d35a14";
+                    }
+                    else if (input_info[i][j] == 'green'){
+                        var colorDiv = document.getElementById("hair" + j);
+                        colorDiv.style.background = "#1bd314";
+                    }
+                    else if (input_info[i][j] == 'black'){
+                        var colorDiv = document.getElementById("hair" + j);
+                        colorDiv.style.background = "#000000";
+                    }
+                    else{
+                        var colorDiv = document.getElementById("hair" + j);
+                        colorDiv.style.background = "#8d14d3";
                     }
                 }
                 else if (i == 2) {
-                    if(input_info[i][j] == 0) {
-                        var colorDiv = document.getElementById("rightpupil" + j);
+                    if(input_info[i][j] == 'red') {
+                        var colorDiv = document.getElementById("hair" + j);
+                        colorDiv.style.background = "#d31414";
+                    }
+                    else if(input_info[i][j] == 'blue') {
+                        var colorDiv = document.getElementById("hair" + j);
+                        colorDiv.style.background = "#3e14d3";
+                    }
+                    else if (input_info[i][j] == 'orange'){
+                        var colorDiv = document.getElementById("hair" + j);
+                        colorDiv.style.background = "#d35a14";
+                    }
+                    else if (input_info[i][j] == 'green'){
+                        var colorDiv = document.getElementById("hair" + j);
                         colorDiv.style.background = "#1bd314";
                     }
-                    else if(input_info[i][j] == 1) {
-                        var colorDiv = document.getElementById("rightpupil" + j);
-                        colorDiv.style.background = makeGrad("#1bd314","#3e14d3");;
+                    else if (input_info[i][j] == 'black'){
+                        var colorDiv = document.getElementById("hair" + j);
+                        colorDiv.style.background = "#000000";
                     }
-                    else {
-                        var colorDiv = document.getElementById("rightpupil" + j);
-                        colorDiv.style.background = "#3e14d3";
+                    else{
+                        var colorDiv = document.getElementById("hair" + j);
+                        colorDiv.style.background = "#8d14d3";
                     }
                 }
                 else if (i == 3) {
-                    if(input_info[i][j] == 0) {
-                        var colorDiv = document.getElementById("nose" + j);
-                        colorDiv.style.background = "#d3d014";
+                    if(input_info[i][j] == 'red') {
+                        var colorDiv = document.getElementById("hair" + j);
+                        colorDiv.style.background = "#d31414";
                     }
-                    else if(input_info[i][j] == 1) {
-                        var colorDiv = document.getElementById("nose" + j);
-                        colorDiv.style.background =  makeGrad("#d3d014","#1bd314");
+                    else if(input_info[i][j] == 'blue') {
+                        var colorDiv = document.getElementById("hair" + j);
+                        colorDiv.style.background = "#3e14d3";
                     }
-                    else {
-                        var colorDiv = document.getElementById("nose" + j);
+                    else if (input_info[i][j] == 'orange'){
+                        var colorDiv = document.getElementById("hair" + j);
+                        colorDiv.style.background = "#d35a14";
+                    }
+                    else if (input_info[i][j] == 'green'){
+                        var colorDiv = document.getElementById("hair" + j);
                         colorDiv.style.background = "#1bd314";
+                    }
+                    else if (input_info[i][j] == 'black'){
+                        var colorDiv = document.getElementById("hair" + j);
+                        colorDiv.style.background = "#000000";
+                    }
+                    else{
+                        var colorDiv = document.getElementById("hair" + j);
+                        colorDiv.style.background = "#8d14d3";
                     }
                 }
                 else {
-                    if(input_info[i][j] == 0) {
-                        var colorDiv = document.getElementById("mouth" + j);
-                        colorDiv.style.backgroundColor = "#d3d014";
+                    if(input_info[i][j] == 'red') {
+                        var colorDiv = document.getElementById("hair" + j);
+                        colorDiv.style.background = "#d31414";
                     }
-                    else if(input_info[i][j] == 1) {
-                        var colorDiv = document.getElementById("mouth" + j);
-                        colorDiv.style.background =  makeGrad("#d3d014","#d31414");
+                    else if(input_info[i][j] == 'blue') {
+                        var colorDiv = document.getElementById("hair" + j);
+                        colorDiv.style.background = "#3e14d3";
                     }
-                    else {
-                        var colorDiv = document.getElementById("mouth" + j);
-                        colorDiv.style.backgroundColor = "#d31414";
+                    else if (input_info[i][j] == 'orange'){
+                        var colorDiv = document.getElementById("hair" + j);
+                        colorDiv.style.background = "#d35a14";
+                    }
+                    else if (input_info[i][j] == 'green'){
+                        var colorDiv = document.getElementById("hair" + j);
+                        colorDiv.style.background = "#1bd314";
+                    }
+                    else if (input_info[i][j] == 'black'){
+                        var colorDiv = document.getElementById("hair" + j);
+                        colorDiv.style.background = "#000000";
+                    }
+                    else{
+                        var colorDiv = document.getElementById("hair" + j);
+                        colorDiv.style.background = "#8d14d3";
                     }
                 }
             }
