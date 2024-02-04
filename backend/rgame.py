@@ -84,7 +84,7 @@ class BoardState:
             self.currentMatrix = self.player1Matrix
         else:
             self.currentMatrix = self.player2Matrix
-    def updateBoard(self,inputIndex):
+    def updateMatrix(self,inputIndex):
         trait_color, entangled_color, trait_index, entangled_trait_index = measure_trait(self.qc,inputIndex)
         if((entangled_color != None) and (entangled_trait_index != None)):
             self.currentMatrix[entangled_trait_index % 5][entangled_trait_index//5 + 1] = entangled_color
