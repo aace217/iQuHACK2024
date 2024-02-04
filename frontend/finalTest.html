@@ -13,6 +13,9 @@
             background-color: #f0f0f0;
             font-family: Arial, sans-serif;
         }
+        .hidden {
+            display: none;
+        }
 
         h1 {
             margin-bottom: 20px;
@@ -23,6 +26,7 @@
             grid-template-columns: repeat(5, 1fr);
             gap: 100px;
             margin-bottom: 20px;
+            margin-right: 10px;
         }
 
         .character {
@@ -129,16 +133,18 @@
     </style>
     <title>Guess Who? Game</title>
 </head>
-<body>
+
+<body >
 
     <h1>Guess Who?</h1>
-
-    <div id="characters">
+    <button onclick="showContent('content1')">Begin</button>
+    <test class = "hidden">
+    <div id="characters" >
         <!-- Add 10 characters (you can replace the text with your own) -->
         <div class="character" onclick="guessCharacter2('Person 1')">
             <div class="face-box">
                 <div class="face">
-                    <div class="hair"></div>
+                    <div class="hair" id="hair1"></div>
                     <div class="eye left-eye"><div class="pupil"></div></div>
                     <div class="eye right-eye"><div class="pupil"></div></div>
                     <div class="nose"></div>
@@ -149,7 +155,7 @@
         <div class="character" onclick="guessCharacter('Person 2')">
             <div class="face-box">
                 <div class="face">
-                    <div class="hair"></div>
+                    <div class="hair" id="hair2"></div>
                     <div class="eye left-eye"><div class="pupil"></div></div>
                     <div class="eye right-eye"><div class="pupil"></div></div>
                     <div class="nose"></div>
@@ -160,7 +166,7 @@
         <div class="character" onclick="guessCharacter('Person 3')">
             <div class="face-box">
                 <div class="face">
-                    <div class="hair"></div>
+                    <div class="hair" id="hair3"></div>
                     <div class="eye left-eye"><div class="pupil"></div></div>
                     <div class="eye right-eye"><div class="pupil"></div></div>
                     <div class="nose"></div>
@@ -171,7 +177,7 @@
         <div class="character" onclick="guessCharacter('Person 4')">
             <div class="face-box">
                 <div class="face">
-                    <div class="hair"></div>
+                    <div class="hair" id="hair4"></div>
                     <div class="eye left-eye"><div class="pupil"></div></div>
                     <div class="eye right-eye"><div class="pupil"></div></div>
                     <div class="nose"></div>
@@ -182,7 +188,7 @@
         <div class="character" onclick="guessCharacter('Person 5')">
             <div class="face-box">
                 <div class="face">
-                    <div class="hair"></div>
+                    <div class="hair" id="hair5"></div>
                     <div class="eye left-eye"><div class="pupil"></div></div>
                     <div class="eye right-eye"><div class="pupil"></div></div>
                     <div class="nose"></div>
@@ -206,6 +212,7 @@
     <div id="result"></div>
 
     <script>
+        
         function guessCharacter(person) {
             var colorDiv = document.getElementById("hair6");
 
@@ -218,16 +225,6 @@
 
 
 
-        // Function to change hair color every second
-        function changeHairColor() {
-            const lastFaceHair = document.getElementById('lastFaceHair');
-
-            setInterval(() => {
-                const randomColor = getRandomColor();
-                lastFaceHair.style.backgroundColor = randomColor;
-            }, 1000);
-        }
-
         // Function to generate a random color
         function getRandomColor() {
             const letters = '0123456789ABCDEF';
@@ -238,10 +235,7 @@
             return color;
         }
 
-        // Call the function to start changing hair color
-        changeHairColor();
-
     </script>
-
+    </test>
 </body>
 </html>
