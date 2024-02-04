@@ -1,6 +1,9 @@
 from qiskit import QuantumCircuit, Aer, execute
 import random
 import numpy as np
+from flask import Flask, render_template, request, jsonify
+import subprocess
+import json
 
 NUM_CHARACTERS = 4
 TRAITS_PER_CHARACTER = 5
@@ -108,3 +111,36 @@ class BoardState:
 
     def is_game_over(self):
         return all(guess == 1 for guess in self.player1Guesses) or all(guess == 1 for guess in self.player2Guesses)
+    
+
+
+
+
+
+
+
+
+
+
+app = Flask(__name__, template_folder=".")
+
+#Receives data from html
+@app.route('/process_data', methods=['POST'])
+def process_data():
+    data = request.get_json()
+    color = data.get('value')
+    attribute = data.get('value2')
+    print('Received value:', data)
+    print('Received value:', attribute)
+    return jsonify({'result': 'Data received successfully'})
+
+#Sends data to html
+@app.route('/')
+def receiveData():
+    return render_template('rFront4.html', view=[
+            [2, 2, 2, 2],
+            [1, 1, 1, 1],
+            [1, 1, 1, 1],
+            [1, 1, 1, 1],
+            [1, 1, 1, 1]
+        ])
