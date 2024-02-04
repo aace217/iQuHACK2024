@@ -13,7 +13,7 @@ def hello_world():
 def new_cgame():
 	game_id = unused_cgame_ids.pop()
 	unused_cgame_ids.append(game_id+1)
-	c_games[game_id] = BoardState(remaining={i:99 for i in CGate}|{i:99 for i in Gate}|{i:99 for i in Ops})
+	c_games[game_id] = BoardState(remaining={i:10 for i in CGate}|{i:10 for i in Gate}|{i:10 for i in Ops})
 	return redirect(url_for("play_c", g_id=game_id))
 
 @app.route("/play_c/<g_id>/", methods=["GET"])
@@ -21,7 +21,7 @@ def play_c(g_id):
 	g_id = int(g_id)
 	if g_id not in c_games: abort(404)
 	c_state = c_games[g_id]
-	return render_template("cFront.html", g_id = g_id, state = c_state, view = c_state.render_probs())
+	return render_template("cFront.html", g_id = g_id, state = c_state, view = c_state.render_probs(), statestrings = c_state.print_chars(), meas = c_state.print_alive(), CGate=CGate,Gate=Gate,Ops=Ops, won = c_state.is_done(), lost=c_state.is_lost())
 	
 @app.route("/play_c/<g_id>/measure/", methods=["POST"])
 def c_measure(g_id):
@@ -31,7 +31,6 @@ def c_measure(g_id):
 		g_id, target = int(g_id), int(target)
 	except: abort(400)
 	if g_id not in c_games: abort(400)
-	if target not in Trait: abort(400)
 	c_state = c_games[g_id]
 	c_games[g_id] = c_state.measure(target)
 	return redirect(url_for("play_c", g_id=g_id)) #c_games[g_id]
