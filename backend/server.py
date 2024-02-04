@@ -18,6 +18,7 @@ def new_game():
 
 @app.route("/play/<g_id>", methods=["GET"])
 def play(g_id):
+	g_id = int(g_id)
 	if g_id not in games: return False
 	c_state = games[g_id]
 	return render_template("../frontend/finalTest.html", state = c_state)
