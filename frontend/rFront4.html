@@ -255,7 +255,7 @@
                 <option value="nose">nose</option>
                 <option value="mouth">mouth</option>
             </select>
-            <button id = "submit" onclick="next()">Submit</button>
+            <button id = "submit" onclick="submitData()">Submit</button>
         </div>
 
 
@@ -264,11 +264,37 @@
 
     </div>
 
+
     <script>
         let input;
-        function next() {
 
+        function submitData() {
+            // Create a JSON object with the data to be sent
+            var jsonData = {
+                value: "test"
+            };
+
+            // Make a POST request to the Flask server
+            fetch('/process_data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(jsonData),
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the response from the Flask server
+                console.log('Response from server:', data);
+                alert('Result from server: ' + data.result);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while processing data.');
+            });
         }
+
+
         function guessCharacter(person) {
             var colorDiv = document.getElementById("hair6");
 
